@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>뿌듯 — 서비스 기획서 v3.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --p:#534AB7; --pl:#EEEDFE; --pm:#AFA9EC; --pd:#3C3489;
+  --t:#0F6E56; --tl:#E1F5EE; --tm:#5DCAA5;
+  --a:#854F0B; --al:#FAEEDA; --am:#EF9F27;
+  --b:#185FA5; --bl:#E6F1FB;
+  --coral:#993C1D; --corl:#FAECE7;
+  --green:#0F6E56; --greenl:#EAF3DE;
+  --dk:#1C1B2E; --dkm:#2D2B4E;
+  --gray:#5F5E5A; --grayl:#F4F3FC; --graym:#B4B2A9;
+  --border:#E4E2F8;
+  --text:#1C1B2E; --textm:#4A4870; --textl:#8886A8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans KR',sans-serif;font-size:15px;color:var(--text);background:#F7F6FF;line-height:1.75}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:var(--dk);padding:28px 0;overflow-y:auto;z-index:100;transition:transform .3s}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+.sb-brand{padding:0 22px 24px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:16px}
+.sb-brand-name{font-size:17px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.sb-brand-sub{font-size:10px;color:var(--pm);margin-top:3px;letter-spacing:.1em;text-transform:uppercase}
+.sb-section{padding:0 14px;margin-bottom:4px}
+.sb-label{font-size:9px;font-weight:700;color:rgba(255,255,255,.25);letter-spacing:.12em;text-transform:uppercase;padding:0 8px;margin-bottom:5px}
+.sb-item{display:block;padding:6px 10px;border-radius:8px;font-size:12px;color:rgba(255,255,255,.5);text-decoration:none;transition:all .15s;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-item:hover,.sb-item.active{background:rgba(83,74,183,.3);color:var(--pm)}
+.sb-item.active{font-weight:500}
+.sb-sub{padding-left:18px;font-size:11px}
+
+/* ── MAIN ── */
+.main{margin-left:230px;min-height:100vh}
+
+/* ── PROGRESS ── */
+#prog{position:fixed;top:0;left:230px;right:0;height:3px;background:var(--p);transform-origin:left;transform:scaleX(0);z-index:200;transition:transform .1s}
+
+/* ── COVER ── */
+.cover{background:var(--dk);padding:80px 80px 72px;position:relative;overflow:hidden;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.cover::before{content:'';position:absolute;right:-100px;top:-100px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(83,74,183,.2) 0%,transparent 70%)}
+.cover::after{content:'';position:absolute;left:-60px;bottom:-80px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(15,110,86,.12) 0%,transparent 70%)}
+.cover-eye{font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--pm);margin-bottom:18px}
+.cover-title{font-family:'DM Serif Display',serif;font-size:68px;line-height:1.05;color:#fff;margin-bottom:6px}
+.cover-title span{color:var(--pm)}
+.cover-sub{font-size:24px;font-weight:300;color:rgba(255,255,255,.6);margin-bottom:40px;letter-spacing:-.2px}
+.cover-line{width:44px;height:3px;background:var(--p);margin-bottom:40px;border-radius:2px}
+.cover-meta{display:flex;gap:0;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;max-width:480px;margin-bottom:48px}
+.cover-meta-item{padding:16px 22px;border-right:1px solid rgba(255,255,255,.08);flex:1}
+.cover-meta-item:last-child{border-right:none}
+.cover-meta-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px}
+.cover-meta-val{font-size:13px;font-weight:500;color:rgba(255,255,255,.85)}
+.cover-toc{display:flex;gap:8px;flex-wrap:wrap}
+.cover-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:100px;border:1px solid rgba(255,255,255,.12);font-size:11.5px;color:rgba(255,255,255,.55);text-decoration:none;transition:all .2s}
+.cover-pill:hover{border-color:var(--p);color:var(--pm);background:rgba(83,74,183,.15)}
+.cover-pill .n{font-size:9px;font-weight:700;color:var(--pm)}
+
+/* ── CONTENT ── */
+.content{max-width:920px;margin:0 auto;padding:0 56px 120px}
+
+/* ── SECTION HEADER ── */
+.sec-hdr{padding:68px 0 0;margin-bottom:36px}
+.sec-num{font-family:'DM Serif Display',serif;font-size:64px;font-style:italic;color:var(--border);line-height:1;margin-bottom:-6px}
+.sec-title{font-size:28px;font-weight:700;color:var(--dk);border-bottom:2.5px solid var(--p);padding-bottom:12px;display:inline-block}
+
+/* ── HEADINGS ── */
+h2{font-size:18px;font-weight:700;color:var(--pd);margin:40px 0 12px;display:flex;align-items:center;gap:8px}
+h2::before{content:'';display:inline-block;width:4px;height:18px;background:var(--p);border-radius:2px;flex-shrink:0}
+h3{font-size:15px;font-weight:700;color:var(--dk);margin:24px 0 9px}
+p{margin-bottom:12px;color:var(--textm);font-size:14.5px}
+
+/* ── CALLOUT ── */
+.callout{border-left:3px solid var(--p);background:var(--pl);border-radius:0 10px 10px 0;padding:14px 18px;margin:18px 0;font-size:14px;color:var(--pd);font-style:italic;font-weight:500}
+.callout.t{border-color:var(--t);background:var(--tl);color:var(--t);font-style:normal}
+.callout.a{border-color:var(--am);background:var(--al);color:var(--a);font-style:normal}
+.callout.info{font-style:normal;font-size:14px}
+
+/* ── BULLETS ── */
+ul.dl{list-style:none;padding:0;margin:10px 0 14px}
+ul.dl li{display:flex;gap:9px;align-items:flex-start;padding:4px 0;font-size:14px;color:var(--textm)}
+ul.dl li::before{content:'';display:inline-block;width:6px;height:6px;background:var(--p);border-radius:50%;margin-top:8px;flex-shrink:0}
+ul.dl.t li::before{background:var(--t)}
+ul.dl.a li::before{background:var(--am)}
+ul.dl.sub li::before{width:5px;height:5px;background:transparent;border:1.5px solid var(--graym)}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0 22px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.tbl thead tr{background:var(--dk)}
+.tbl thead th{padding:10px 13px;font-weight:600;font-size:12px;color:rgba(255,255,255,.85);text-align:left;letter-spacing:.04em}
+.tbl thead th:not(:first-child){text-align:center}
+.tbl tbody tr:nth-child(even){background:var(--grayl)}
+.tbl tbody tr:hover{background:var(--pl);transition:background .15s}
+.tbl td{padding:9px 13px;border-bottom:1px solid var(--border);color:var(--textm);vertical-align:top}
+.tbl td:not(:first-child){text-align:center}
+.tbl td:first-child{font-weight:500;color:var(--text)}
+.tbl tr:last-child td{border-bottom:none}
+.chip{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:600}
+.chip.ok{background:var(--greenl);color:var(--green)}
+.chip.mid{background:var(--al);color:var(--a)}
+.chip.bad{background:var(--corl);color:var(--coral)}
+
+/* ── TWO COL ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0}
+
+/* ── INFO BOX ── */
+.ibox{border-radius:12px;padding:16px 20px;margin:14px 0}
+.ibox.p{background:var(--pl)}
+.ibox.t{background:var(--tl)}
+.ibox.a{background:var(--al)}
+.ibox.b{background:var(--bl)}
+.ibox.coral{background:var(--corl)}
+.ibox.dk{background:var(--dkm);color:#fff}
+
+/* ── INNOVATION CARD ── */
+.inno-card{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;background:#fff}
+.inno-card-hdr{padding:14px 18px;display:flex;align-items:center;gap:10px}
+.inno-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;color:#fff}
+.inno-title{font-size:15px;font-weight:700}
+.inno-body{padding:14px 18px}
+
+/* ── SERVICE CARD ── */
+.svc-card{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff}
+.svc-hdr{padding:12px 16px;display:flex;align-items:center;gap:10px}
+.svc-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.svc-name{font-size:14px;font-weight:700}
+.svc-tag{font-size:11.5px;color:var(--gray);margin-top:1px}
+.svc-body{padding:0 16px 14px}
+.svc-desc{font-size:13px;color:var(--textm);margin-bottom:10px;line-height:1.6;border-top:1px solid var(--border);padding-top:10px}
+.svc-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.meta-box{background:var(--grayl);border-radius:8px;padding:8px 10px}
+.meta-label{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.meta-text{font-size:12px;color:var(--textm);line-height:1.5}
+.diff-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray);margin-bottom:5px}
+
+/* ── PERSONA CARD ── */
+.persona{border:1px solid var(--border);border-radius:14px;padding:18px;background:#fff}
+.persona h3{margin-top:0;font-size:14.5px}
+
+/* ── STEP FLOW ── */
+.step-flow{display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr;align-items:start;margin:18px 0}
+.step-arrow{display:flex;align-items:center;justify-content:center;padding-top:44px;font-size:18px;color:var(--graym)}
+.step-card{border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff}
+.step-top{padding:14px;text-align:center}
+.step-num{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.75;margin-bottom:4px}
+.step-emoji{font-size:30px;margin:4px 0}
+.step-name{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px}
+.step-badge{display:inline-block;background:rgba(255,255,255,.2);border-radius:20px;padding:2px 10px;font-size:10px;color:rgba(255,255,255,.9);margin-top:3px}
+.step-body{padding:12px 14px;font-size:13px;color:var(--textm);line-height:1.6}
+
+/* ── ROADMAP ── */
+.rdmap-card{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#fff}
+.rdmap-hdr{padding:12px 16px}
+.rdmap-phase{font-size:13px;font-weight:700;color:#fff}
+.rdmap-sub{font-size:10px;opacity:.75;font-weight:400;margin-top:2px;color:#fff}
+.rdmap-body{padding:12px 16px;list-style:none}
+.rdmap-body li{font-size:12.5px;color:var(--textm);padding:4px 0 4px 14px;position:relative;border-bottom:1px solid var(--border)}
+.rdmap-body li:last-child{border-bottom:none}
+.rdmap-body li::before{content:'';position:absolute;left:0;top:12px;width:5px;height:5px;border-radius:50%;background:var(--graym)}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.stat-card{background:var(--dk);border-radius:14px;padding:20px;text-align:center}
+.stat-num{font-family:'DM Serif Display',serif;font-size:38px;color:#fff;line-height:1;margin-bottom:6px}
+.stat-label{font-size:12px;color:var(--pm);font-weight:500}
+.stat-sub{font-size:11px;color:rgba(255,255,255,.3);margin-top:4px}
+
+/* ── FINAL CALLOUT ── */
+.final-box{background:var(--pl);border-radius:14px;padding:22px 26px;margin:24px 0;border-left:4px solid var(--p)}
+.final-box .f-label{font-size:11px;font-weight:700;color:var(--pd);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.final-box p{color:var(--pd);font-weight:500;margin-bottom:0}
+
+/* ── APPENDIX ── */
+.app-hdr{padding:56px 0 0;margin-bottom:28px}
+.app-title{font-size:22px;font-weight:700;color:var(--dk);border-bottom:2px solid var(--am);padding-bottom:10px;display:inline-block}
+
+/* ── FOOTER ── */
+.doc-footer{background:var(--dk);padding:36px 56px;text-align:center}
+.doc-footer .brand{font-size:15px;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:6px}
+.doc-footer p{font-size:11.5px;color:rgba(255,255,255,.25);margin:0}
+
+/* ── UTILS ── */
+.divider{height:.5px;background:var(--border);margin:12px 0}
+.caption{font-size:12px;color:var(--textl);margin-top:-10px;margin-bottom:16px;font-style:italic}
+.highlight-row td:last-child{font-weight:600;color:var(--green)!important;background:var(--greenl)}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.cover>*{animation:fadeUp .55s ease both}
+.cover>*:nth-child(1){animation-delay:.1s}
+.cover>*:nth-child(2){animation-delay:.2s}
+.cover>*:nth-child(3){animation-delay:.25s}
+.cover>*:nth-child(4){animation-delay:.3s}
+.cover>*:nth-child(5){animation-delay:.35s}
+.cover>*:nth-child(6){animation-delay:.45s}
+.cover>*:nth-child(7){animation-delay:.5s}
+
+/* ── PRINT ── */
+@media print{
+  .sidebar,#prog{display:none}
+  .main{margin-left:0}
+  .content{padding:0 40px 60px;max-width:100%}
+  .cover{min-height:auto;padding:40px}
+  .sec-hdr{padding-top:40px}
+  a{color:inherit}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-brand-name">뿌듯</div>
+    <div class="sb-brand-sub">Service Planning v3.1</div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">목차</div>
+    <a class="sb-item" href="#cover">표지</a>
+    <a class="sb-item" href="#s1">1. 서비스 개요</a>
+    <a class="sb-item sb-sub" href="#s1-1">1.1 서비스 소개</a>
+    <a class="sb-item sb-sub" href="#s1-2">1.2 핵심 가치</a>
+    <a class="sb-item sb-sub" href="#s1-3">1.3 기본 정보</a>
+    <a class="sb-item" href="#s2">2. 핵심 혁신 & 문제 정의</a>
+    <a class="sb-item sb-sub" href="#s2-1">2.1 기존 앱의 전제</a>
+    <a class="sb-item sb-sub" href="#s2-2">2.2 실제 데이터</a>
+    <a class="sb-item" href="#s3">3. 3가지 핵심 혁신</a>
+    <a class="sb-item sb-sub" href="#s3-1">혁신 A — 설계자·실행자 분리</a>
+    <a class="sb-item sb-sub" href="#s3-2">혁신 B — 습관 인프라</a>
+    <a class="sb-item sb-sub" href="#s3-3">혁신 C — 실패 설계 철학</a>
+    <a class="sb-item" href="#s4">4. 기존 서비스 분석</a>
+    <a class="sb-item" href="#s5">5. 서비스 설계</a>
+    <a class="sb-item sb-sub" href="#s5-1">5.1 페르소나</a>
+    <a class="sb-item sb-sub" href="#s5-2">5.2 하루 루틴</a>
+    <a class="sb-item sb-sub" href="#s5-3">5.3 정보 구조(IA)</a>
+    <a class="sb-item" href="#s6">6. 핵심 기능</a>
+    <a class="sb-item sb-sub" href="#s6-1">6.1 온보딩</a>
+    <a class="sb-item sb-sub" href="#s6-2">6.2 오늘 루틴</a>
+    <a class="sb-item sb-sub" href="#s6-3">6.3 AI 캐릭터 & 마을 짓기</a>
+    <a class="sb-item sb-sub" href="#s6-4">6.4 알림 시스템</a>
+    <a class="sb-item sb-sub" href="#s6-5">6.5 소셜 시스템</a>
+    <a class="sb-item sb-sub" href="#s6-6">6.6 AI 기술 활용</a>
+    <a class="sb-item" href="#s8">7. 차별점 요약</a>
+    <a class="sb-item" href="#s9">8. 한계 및 향후 발전 방향</a>
+  </div>
+</nav>
+
+<div class="main">
+
+<!-- ══════════════════ COVER ══════════════════ -->
+<section id="cover" class="cover">
+  <div class="cover-eye">마이 스마트 루틴 - 뿌듯 · Service Planning Document · v3.1 · 2025.05</div>
+  <div class="cover-title">뿌듯<span>.</span></div>
+  <div class="cover-sub">매일 스스로 공부를 시작하는 습관을 만들어주는 학습 루틴 서비스</div>
+  <div class="cover-line"></div>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><div class="cover-meta-label">서비스명</div><div class="cover-meta-val">뿌듯</div></div>
+    <div class="cover-meta-item"><div class="cover-meta-label">유형</div><div class="cover-meta-val">초등 학습 습관 앱</div></div>
+    <div class="cover-meta-item"><div class="cover-meta-label">버전</div><div class="cover-meta-val">v2.1</div></div>
+  </div>
+  <div class="cover-toc">
+    <a class="cover-pill" href="#s1"><span class="n">01</span> 서비스 개요</a>
+    <a class="cover-pill" href="#s2"><span class="n">02</span> 문제 정의</a>
+    <a class="cover-pill" href="#s3"><span class="n">03</span> 핵심 혁신</a>
+    <a class="cover-pill" href="#s4"><span class="n">04</span> 경쟁 분석</a>
+    <a class="cover-pill" href="#s5"><span class="n">05</span> 서비스 설계</a>
+    <a class="cover-pill" href="#s6"><span class="n">06</span> 핵심 기능</a>
+    <a class="cover-pill" href="#s7"><span class="n">07</span> 로드맵</a>
+    <a class="cover-pill" href="#s8"><span class="n">08</span> 차별점</a>
+  </div>
+</section>
+
+<div class="content">
+
+<!-- ══════════════════ 1. 서비스 개요 ══════════════════ -->
+<div id="s1" class="sec-hdr"><div class="sec-num">01</div><div class="sec-title">서비스 개요</div></div>
+
+<div id="s1-1"></div>
+<h2>1.1 서비스 소개</h2>
+<p><strong>마이 스마트 루틴 - 뿌듯</strong>은 초등학생이 매일 스스로 공부를 시작하고 계속 이어갈 수 있도록 돕는 <strong>자기주도 학습 루틴 서비스</strong>입니다. 보호자(설계자)가 루틴 구조를 만들고, 아이(실행자)가 그 안에서 실행합니다. 하루 3단계 루틴(하루 설계 → 실행 → 하루 정리), AI 캐릭터 생성, 우주 마을 짓기 보상, 가족·친구와 함께하는 소셜 기능을 결합하여 아이가 꾸준히 공부 습관을 만들어 나갈 수 있도록 지원합니다.</p>
+<div id="s1-2"></div>
+<h2>1.2 핵심 가치</h2>
+<div class="callout">"매일 스스로 시작하는 아이로 자라나는 것, 그 첫 걸음을 함께합니다."</div>
+
+<div class="two-col">
+  <div class="ibox p">
+    <h3 style="margin-top:0;color:var(--pd)">핵심 인사이트</h3>
+    <p style="margin-bottom:10px">아이가 공부를 못 시작하는 이유는 <strong>"하기 싫어서"가 아니라</strong> <strong style="color:var(--p)">"어디서 시작할지 막막해서"</strong>입니다.</p>
+    <ul class="dl">
+      <li>선택지를 주면 아이도 2분 안에 오늘 계획을 완성한다</li>
+      <li>짧은 성공 경험이 쌓이면 스스로 하고 싶어진다</li>
+      <li>혼자보다 같이할 때 더 오래 지속된다</li>
+    </ul>
+  </div>
+  <div class="ibox t">
+    <h3 style="margin-top:0;color:var(--t)">3가지 핵심 가치</h3>
+    <ul class="dl t">
+      <li><strong>습관이 실력을 만든다</strong> — 초등 시기엔 꾸준히 하는 습관이 먼저</li>
+      <li><strong>재미있어야 매일 한다</strong> — AI 캐릭터·우주 마을 짓기로 내재 동기 형성</li>
+      <li><strong>함께하면 더 오래 간다</strong> — 가족·친구와의 공동 달성 구조</li>
+    </ul>
+  </div>
+</div>
+
+<div id="s1-3"></div>
+<h2>1.3 기본 정보</h2>
+<table class="tbl">
+  <thead><tr><th>항목</th><th style="text-align:left">내용</th></tr></thead>
+  <tbody>
+    <tr><td>서비스명</td><td style="text-align:left">마이 스마트 루틴 - 뿌듯</td></tr>
+    <tr><td>서비스 유형</td><td style="text-align:left">모바일 앱 (iOS / Android)</td></tr>
+    <tr><td>타겟 사용자</td><td style="text-align:left">초등 1~3학년, 보호자(부모)</td></tr>
+    <tr><td>핵심 기능</td><td style="text-align:left">AI 캐릭터 생성, 하루 루틴 설계, 우주 마을 짓기 보상, 소셜 챌린지, AI 모드 추천</td></tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════ 2. 핵심 혁신 & 문제 정의 ══════════════════ -->
+<div id="s2" class="sec-hdr"><div class="sec-num">02</div><div class="sec-title">핵심 혁신 & 문제 정의</div></div>
+
+<h2>2.1 우리가 발견한 것</h2>
+<p>기존 습관 앱(Duolingo, Forest, 열품타 등)은 모두 같은 전제를 공유합니다. <strong>"습관을 만들 사람이 직접 그 구조를 설계한다."</strong> 이 전제는 성인에게는 작동하지만, 만 6~9세에게는 성립하지 않습니다. 기존 앱들은 이 발달 단계를 무시하고 성인용 습관 앱을 아이 버전으로 만들었을 뿐입니다.</p>
+
+<div id="s2-2"></div>
+<h2>2.2 실제 데이터로 본 문제</h2>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-num">56%</div>
+    <div class="stat-label">초등생 "공부 싫다" 응답<br>고학년 올라갈수록 4%씩 증가</div>
+    <div class="stat-sub">아이스크림에듀, 매일일보 2022.11</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">57%</div>
+    <div class="stat-label">학부모가 "자발적 학습 의지"를<br>습관 형성의 가장 중요한 요소로 꼽음</div>
+    <div class="stat-sub">비상교육 설문, 뉴시스 2024.09</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">42%</div>
+    <div class="stat-label">초등 학부모 "모바일 기기가<br>공부 습관에 가장 큰 방해"</div>
+    <div class="stat-sub">비상교육 설문, 뉴시스 2024.09</div>
+  </div>
+</div>
+<div class="stat-grid" style="margin-top:12px">
+  <div class="stat-card">
+    <div class="stat-num">74.9%</div>
+    <div class="stat-label">고학년 초등생이 공부로<br>스트레스 경험</div>
+    <div class="stat-sub">엘리하이 초등 트렌드 보고서, 2026</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">33.2%</div>
+    <div class="stat-label">저학년이 "엄마가 시키는 것부터"<br>수동적으로 공부 시작</div>
+    <div class="stat-sub">엘리하이 초등 트렌드 보고서, 2026</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">54.2%</div>
+    <div class="stat-label">상위 1% 학생의 선행 학습 동기<br>"수학이 좋아서, 더 잘하고 싶어서"</div>
+    <div class="stat-sub">엘리하이 초등 트렌드 보고서, 2026</div>
+  </div>
+</div>
+<p class="caption">* 출처: 비상교육·뉴시스(2024.09), 아이스크림에듀·매일일보(2022.11), 메가스터디교육 엘리하이 2026 초등 트렌드 보고서</p>
+<p class="caption" style="margin-top:-4px">** 상세 데이터 분석은 [별첨 A] 참조</p>
+
+<div id="s3" class="sec-hdr"><div class="sec-num">03</div><div class="sec-title">3가지 핵심 혁신</div></div>
+<p style="margin-bottom:20px">우리가 발견한 것 → 우리의 대답 → 결과. 세 혁신은 하나의 서사로 연결됩니다. <span style="font-size:13px;color:var(--text-light)">상세 내용은 [별첨 A] 참조</span></p>
+
+<div id="s3-1"></div>
+<div class="inno-card">
+  <div class="inno-card-hdr" style="background:var(--pl)">
+    <span class="inno-badge" style="background:var(--p)">혁신 A</span>
+    <div>
+      <div class="inno-title" style="color:var(--pd)">설계자와 실행자의 분리 — Designer-Executor Separation</div>
+      <div style="font-size:12px;color:var(--p)">세상의 모든 습관 앱이 공유하는 전제를 깬 유일한 구조</div>
+    </div>
+  </div>
+  <div class="inno-body">
+    <div class="two-col">
+      <div>
+        <p style="font-size:13px;color:var(--coral);font-weight:600;margin-bottom:6px">기존 앱 — 사용자가 직접 설계하고 실행</p>
+        <p style="font-size:13px;margin-bottom:0">초등생이 "오늘 뭐 할지" 결정하는 과정 자체가 가장 큰 장벽. 저학년의 33.2%는 시작을 스스로 못 함.</p>
+      </div>
+      <div>
+        <p style="font-size:13px;color:var(--t);font-weight:600;margin-bottom:6px">뿌듯 — 보호자가 설계, 아이가 실행</p>
+        <p style="font-size:13px;margin-bottom:0">아이는 루틴 순서 조정만 가능. 결정 피로 없이 바로 시작. 발달 단계에 맞는 유일한 구조 분리.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s3-2"></div>
+<div class="inno-card">
+  <div class="inno-card-hdr" style="background:var(--tl)">
+    <span class="inno-badge" style="background:var(--t)">혁신 B</span>
+    <div>
+      <div class="inno-title" style="color:#085041">습관 인프라 — Habit Infrastructure</div>
+      <div style="font-size:12px;color:var(--t)">콘텐츠 경쟁이 아닌, 모든 학습 위에 깔리는 구조</div>
+    </div>
+  </div>
+  <div class="inno-body">
+    <div class="two-col">
+      <div>
+        <p style="font-size:13px;color:var(--coral);font-weight:600;margin-bottom:6px">기존 앱 — 콘텐츠 완결형</p>
+        <p style="font-size:13px;margin-bottom:0">Forest 안에서 공부, Duolingo 안에서 영어 학습. 홈런, 학습지와 경쟁 관계.</p>
+      </div>
+      <div>
+        <p style="font-size:13px;color:var(--t);font-weight:600;margin-bottom:6px">뿌듯 — 인프라형</p>
+        <p style="font-size:13px;margin-bottom:0">콘텐츠 없이 구조만 제공. 학원·학습지가 뿌듯 위에서 더 잘 작동. 공존 가능.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s3-3"></div>
+<div class="inno-card">
+  <div class="inno-card-hdr" style="background:var(--al)">
+    <span class="inno-badge" style="background:var(--am);color:var(--a)">혁신 C</span>
+    <div>
+      <div class="inno-title" style="color:var(--a)">실패에 친절한 설계 — Failure-Friendly Design</div>
+      <div style="font-size:12px;color:var(--am)">단기 리텐션을 위해 아동의 장기 학습 동기를 훼손하지 않습니다</div>
+    </div>
+  </div>
+  <div class="inno-body">
+    <div class="two-col">
+      <div>
+        <p style="font-size:13px;color:var(--coral);font-weight:600;margin-bottom:6px">기존 앱 — 패널티형</p>
+        <p style="font-size:13px;margin-bottom:0">Forest 식물 소멸, Duolingo 하트 감소, 열품타 랭킹 하락. 성인에겐 작동하지만 초등 저학년에겐 공부 회피 정서를 형성할 수 있음.</p>
+      </div>
+      <div>
+        <p style="font-size:13px;color:var(--t);font-weight:600;margin-bottom:6px">뿌듯 — 친절형</p>
+        <p style="font-size:13px;margin-bottom:0">연속 기록 보호 쿠폰, 격려 알림, 순위 없음. 실패에 친절한 설계는 기능이 아니라 교육 철학입니다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s4" class="sec-hdr"><div class="sec-num">04</div><div class="sec-title">기존 서비스 분석</div></div>
+
+<p>5개 주요 경쟁 서비스(열품타·Focustown·집중 식물·파트타임 스터디·캐시워크 모두의 챌린지)를 분석한 결과는 다음과 같습니다. <span style="font-size:13px;color:var(--text-light)">개별 서비스 상세 분석은 [별첨 A] 참조</span></p>
+
+<div style="overflow-x:auto">
+<table class="tbl">
+  <thead><tr><th>서비스</th><th>초등 적합</th><th>습관 설계</th><th>실패 설계</th><th>소셜 안전</th><th>보호자 연동</th><th>공부 특화</th><th>설계자-실행자 분리</th></tr></thead>
+  <tbody>
+    <tr><td>열품타</td><td><span class="chip bad">아님</span></td><td><span class="chip mid">일부</span></td><td><span class="chip bad">패널티형</span></td><td><span class="chip bad">랭킹 노출</span></td><td><span class="chip bad">없음</span></td><td><span class="chip ok">있음</span></td><td><span class="chip bad">없음</span></td></tr>
+    <tr><td>Focustown</td><td><span class="chip mid">일부</span></td><td><span class="chip bad">약함</span></td><td><span class="chip bad">패널티형</span></td><td><span class="chip ok">무해</span></td><td><span class="chip bad">없음</span></td><td><span class="chip mid">간접</span></td><td><span class="chip bad">없음</span></td></tr>
+    <tr><td>집중 식물</td><td><span class="chip mid">일부</span></td><td><span class="chip bad">약함</span></td><td><span class="chip bad">패널티형</span></td><td><span class="chip ok">무해</span></td><td><span class="chip bad">없음</span></td><td><span class="chip bad">없음</span></td><td><span class="chip bad">없음</span></td></tr>
+    <tr><td>파트타임 스터디</td><td><span class="chip bad">아님</span></td><td><span class="chip mid">그룹 의존</span></td><td><span class="chip mid">없음</span></td><td><span class="chip bad">채팅 위험</span></td><td><span class="chip bad">없음</span></td><td><span class="chip mid">간접</span></td><td><span class="chip bad">없음</span></td></tr>
+    <tr><td>모두의 챌린지</td><td><span class="chip bad">아님</span></td><td><span class="chip bad">이벤트성</span></td><td><span class="chip mid">없음</span></td><td><span class="chip bad">광고 노출</span></td><td><span class="chip bad">없음</span></td><td><span class="chip bad">없음</span></td><td><span class="chip bad">없음</span></td></tr>
+    <tr class="highlight-row" style="background:var(--pl)"><td><strong>뿌듯 ★</strong></td><td><span class="chip ok">초등 전용</span></td><td><span class="chip ok">핵심 설계</span></td><td><span class="chip ok">친절형 ★</span></td><td><span class="chip ok">이모티콘만</span></td><td><span class="chip ok">있음</span></td><td><span class="chip ok">있음</span></td><td><span class="chip ok">유일</span></td></tr>
+  </tbody>
+</table>
+</div>
+<div class="callout" style="margin-top:16px"><strong>핵심 공백:</strong> 5개 기존 서비스 모두 보호자 연동이 없다. 처음부터 아동을 타겟으로 설계하지 않았다는 증거이며, 뿌듯이 새로운 카테고리를 만드는 이유입니다.</div>
+
+<div id="s5" class="sec-hdr"><div class="sec-num">05</div><div class="sec-title">서비스 설계</div></div>
+
+<div id="s5-1"></div>
+<h2>5.1 타겟 사용자 (페르소나)</h2>
+<div class="two-col">
+  <div class="persona">
+    <h3>🧒 민준 (초등 3학년, 9세)</h3>
+    <p>학원은 다니지만 집에서 혼자 공부를 시작하지 못함. 유튜브를 보다가 공부 타이밍을 놓치고, "오늘 뭐 해야 하지?"를 스스로 결정한 적이 없음.</p>
+    <div style="font-size:11px;font-weight:700;color:var(--pd);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">필요한 것</div>
+    <ul class="dl">
+      <li>시작을 도와주는 친근한 가이드</li>
+      <li>달성했을 때의 성취감</li>
+      <li>친구와 함께하는 재미</li>
+    </ul>
+  </div>
+  <div class="persona">
+    <h3>👩 민준 엄마 (35세, 직장인)</h3>
+    <p>매일 "공부해"라고 말하기 싫음. 아이가 스스로 하는 습관을 만들어주고 싶지만 방법을 모름. 오늘 뭘 했는지 간단히 확인하고 싶음.</p>
+    <div style="font-size:11px;font-weight:700;color:var(--t);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">필요한 것</div>
+    <ul class="dl t">
+      <li>잔소리 없이 아이 스스로 하게 하는 구조</li>
+      <li>오늘의 공부 현황 간단 확인</li>
+      <li>아이에게 응원을 전달하는 방법</li>
+    </ul>
+  </div>
+</div>
+
+<div id="s5-2"></div>
+<h2>5.2 하루 루틴 — 3단계 서비스 플로우</h2>
+<p>뿌듯의 핵심은 매일 반복되는 3단계 루틴입니다. 각 단계는 최소한의 시간과 입력으로 완료할 수 있도록 설계됩니다.</p>
+
+<div class="step-flow">
+  <div class="step-card">
+    <div class="step-top" style="background:var(--am)">
+      <div class="step-num" style="color:rgba(255,255,255,.8)">STEP 01</div>
+      <div class="step-emoji">☀️</div>
+      <div class="step-name">하루 설계</div>
+      <span class="step-badge">2분</span>
+    </div>
+    <div class="step-body">오늘 할 과목 3가지를 선택지에서 탭으로 고름. 빈 입력창 없음, 결정 피로 제거.</div>
+  </div>
+  <div class="step-arrow">→</div>
+  <div class="step-card">
+    <div class="step-top" style="background:var(--p)">
+      <div class="step-num" style="color:rgba(255,255,255,.8)">STEP 02</div>
+      <div class="step-emoji">📖</div>
+      <div class="step-name">실행</div>
+      <span class="step-badge">자유 시간</span>
+    </div>
+    <div class="step-body">타이머 or 자유 방식으로 공부. 과목 완료 시 체크, 씨앗 즉시 적립.</div>
+  </div>
+  <div class="step-arrow">→</div>
+  <div class="step-card">
+    <div class="step-top" style="background:var(--t)">
+      <div class="step-num" style="color:rgba(255,255,255,.8)">STEP 03</div>
+      <div class="step-emoji">🌙</div>
+      <div class="step-name">하루 정리</div>
+      <span class="step-badge">1분</span>
+    </div>
+    <div class="step-body">AI가 생성한 맞춤형 질문에 선택지로 답하는 회고. 오늘 하루를 정리하고 내일 루틴을 연결. 메타인지 씨앗 적립.</div>
+  </div>
+</div>
+<div class="callout t" style="margin-top:14px">3단계 루프가 매일 반복되면서 "공부 시작"이 루틴이 되고, 루틴이 쌓이면 습관이 됩니다.</div>
+
+<div id="s5-3"></div>
+<h2>5.3 정보 구조 (IA)</h2>
+<table class="tbl">
+  <thead><tr><th>탭</th><th style="text-align:left">이름</th><th style="text-align:left">주요 화면</th></tr></thead>
+  <tbody>
+    <tr><td>01</td><td style="text-align:left">오늘 루틴 (홈)</td><td style="text-align:left">하루 설계, AI 아바타 생성, 공부 타이머, 완료 체크, 하루 정리, 연속 기록, 씨앗 현황</td></tr>
+    <tr><td>02</td><td style="text-align:left">루틴 방</td><td style="text-align:left">나 혼자, 가족 방, 친구 방, 응원 보내기, 챌린지 현황, 초대</td></tr>
+    <tr><td>03</td><td style="text-align:left">나의 우주</td><td style="text-align:left">우주 마을 현황, 씨앗 보관함, 마을 상점, 뱃지 컬렉션, 캐릭터 꾸미기</td></tr>
+    <tr><td>04</td><td style="text-align:left">설정 (보호자)</td><td style="text-align:left">보호자 연동, 학년·목표 설정, 알림 설정, 소셜 범위 승인, AI 캐릭터 수정, 주간 리포트, 주간 AI 인사이트, 보호자 메시지 전송</td></tr>
+  </tbody>
+</table>
+
+<div id="s6" class="sec-hdr"><div class="sec-num">06</div><div class="sec-title">핵심 기능 상세</div></div>
+<p style="margin-bottom:20px;color:var(--textm);font-size:14px">본 섹션은 <strong>뿌듯 v1.0 인터랙티브 프로토타입</strong> 기준으로 작성되었습니다. 실제 구현된 화면과 인터랙션을 기반으로 기술합니다.</p>
+
+<!-- 6.1 온보딩 -->
+<div id="s6-1"></div>
+<h2>6.1 온보딩</h2>
+<p>온보딩은 <strong>보호자가 먼저 완료하는 필수 설정</strong>으로 구성됩니다. 총 10단계(스텝 1~8, 10)로 이루어지며, 각 단계는 진행 바와 뒤로가기 버튼을 통해 앞뒤로 이동할 수 있습니다.</p>
+
+<h3>① 온보딩 플로우 — 전체 구조</h3>
+<table class="tbl">
+  <thead><tr><th>스텝</th><th style="text-align:left">화면명</th><th style="text-align:left">내용</th><th style="text-align:left">비고</th></tr></thead>
+  <tbody>
+    <tr><td>스플래시</td><td style="text-align:left">시작 화면</td><td style="text-align:left">'뿌듯' 로고 + 캐릭터 이미지 + 시작하기 버튼</td><td style="text-align:left">시작 화면 디자인 시안 보기(데모용) 진입 가능</td></tr>
+    <tr><td>Step 1</td><td style="text-align:left">앱 주체 확인</td><td style="text-align:left">보호자 / 아이 선택. 아이 선택 시 "부모님이 먼저 설정해줘야 해요" 안내 표시</td><td style="text-align:left">보호자 선택 시에만 다음 단계 진행</td></tr>
+    <tr><td>Step 2</td><td style="text-align:left">아이 기본 정보</td><td style="text-align:left">아이 닉네임 입력 + 학년 선택 (1~3학년)</td><td style="text-align:left">닉네임 입력 필수</td></tr>
+    <tr><td>Step 3</td><td style="text-align:left">학습 환경 파악</td><td style="text-align:left">학원 수 선택 (없음 / 1~2개 / 3개 이상)</td><td style="text-align:left">단일 선택</td></tr>
+    <tr><td>Step 4</td><td style="text-align:left">어려움 유형 선택</td><td style="text-align:left">공부 시작 안 함 / 꾸준히 못 함 / 스스로 안 함 / 어떻게 도와줄지 모름 — 복수 선택 가능</td><td style="text-align:left">최소 1개 선택 필수</td></tr>
+    <tr><td>Step 5</td><td style="text-align:left">아이 성향 찾기</td><td style="text-align:left">3문항 질문 (선택 사항, 건너뛰기 가능)</td><td style="text-align:left">설정 화면에서 재진행 가능</td></tr>
+    <tr><td>Step 6</td><td style="text-align:left">루틴 직접 설정</td><td style="text-align:left">루틴 이름·양·단위·빈도를 테이블 형태로 입력. 기본값 3개 제공, 최대 5개까지 추가 가능</td><td style="text-align:left">루틴 이름 입력 필수</td></tr>
+    <tr><td>Step 7</td><td style="text-align:left">루틴 크기 확인</td><td style="text-align:left">"딱 좋아요" / "좀 줄일게요" 선택. '줄일게요' 선택 시 쪼개기 팁 카드 노출</td><td style="text-align:left">단일 선택</td></tr>
+    <tr><td>Step 8</td><td style="text-align:left">알림 시간 설정</td><td style="text-align:left">오전/오후 토글 + 시(1~12시) + 분(0·10·20·30·40·50분) 그리드 선택</td><td style="text-align:left">매일 알림 시간 설정</td></tr>
+    <tr><td>Step 10</td><td style="text-align:left">성향 결과 & 모드 추천</td><td style="text-align:left">성향 결과 멘트 표시 + 소셜 모드 선택 (가족과 함께 / 친구와 함께 / 혼자 집중). '뿌듯 시작하기' 버튼으로 온보딩 완료</td><td style="text-align:left">모드는 언제든지 설정에서 변경 가능</td></tr>
+  </tbody>
+</table>
+<div class="callout t">온보딩 완료 후 <strong>캐릭터 만들기 화면</strong>으로 이동하며, 이후 <strong>학습 환경 설정 완료 중간 페이지</strong>(아이 이름·학년, 루틴 수, 알림 시간 요약 표시)를 거쳐 홈 화면으로 진입합니다.</div>
+
+<!-- 6.2 오늘 루틴 -->
+<div id="s6-2"></div>
+<h2>6.2 오늘 루틴 (홈 화면)</h2>
+<p>홈 화면은 <strong>하루 3단계 루틴 사이클</strong>(하루 설계 → 실행 → 하루 정리 → 완료)로 구성됩니다. 화면 상단에는 현재 보유 씨앗 수와 연속 달성 일수가 항상 표시됩니다.</p>
+
+<h3>① 하루 설계 (design 단계)</h3>
+<p>온보딩에서 설정한 루틴 목록이 2열 그리드로 표시됩니다. 각 카드에는 루틴 이름, 이모지, 목표 양(예: 5문제)이 표시되며, 탭하면 선택/해제됩니다. 최대 3개까지 선택할 수 있으며, 1개 이상 선택 시 "공부 시작!" 버튼이 활성화됩니다.</p>
+<p>기본 루틴 3개(수학 문제집 5문제, 영어 단어 10개, 독서 20분)가 디폴트로 제공됩니다.</p>
+
+<h3>② 실행 (execute 단계)</h3>
+<p>선택한 루틴 카드가 목록으로 표시되며, 각 카드에는 세 가지 액션 버튼이 있습니다.</p>
+<table class="tbl">
+  <thead><tr><th>버튼</th><th style="text-align:left">동작</th></tr></thead>
+  <tbody>
+    <tr><td>⏱ 타이머</td><td style="text-align:left">해당 루틴의 타이머 시작. 화면 상단에 경과 시간 표시 (MM:SS 형식)</td></tr>
+    <tr><td>✅ 완료</td><td style="text-align:left">즉시 완료 처리. +10 씨앗 적립, 별 파티클 애니메이션 재생</td></tr>
+    <tr><td>😢 포기</td><td style="text-align:left">포기 확인 모달 표시 후 포기 처리. 씨앗 미지급</td></tr>
+  </tbody>
+</table>
+<div class="callout a">타이머 작동 중에는 화면 상단에 어두운 배경의 타이머 카드가 표시되며, 완료 또는 포기 버튼으로 종료합니다. <strong>30분(1800초) 초과 시 자동으로 포기 처리</strong>됩니다. 진행 바는 완료(주황) + 포기(빨강) 비율을 실시간으로 표시합니다. 모든 루틴이 완료 또는 포기 상태가 되면 "하루 정리하기!" 버튼이 활성화됩니다.</div>
+
+<h3>③ 하루 정리 (review 단계)</h3>
+<p>완료 또는 포기한 루틴별로 순서대로 질문에 답하는 단계입니다. 상단에 과목별 진행 도트가 표시됩니다.</p>
+<div class="two-col">
+  <div class="ibox t" style="margin:0">
+    <h3 style="margin-top:0;color:var(--t);font-size:13.5px">✅ 완료한 루틴 — 2단계 질문</h3>
+    <ul class="dl t" style="margin:0">
+      <li><strong>1단계:</strong> 감정 선택 — 너무 뿌듯해! / 괜찮았어 / 힘들었어</li>
+      <li><strong>2단계:</strong> 난이도 선택 — 쉬웠어 / 딱 맞았어 / 어려웠어</li>
+    </ul>
+  </div>
+  <div class="ibox coral" style="margin:0">
+    <h3 style="margin-top:0;color:var(--coral);font-size:13.5px">😢 포기한 루틴 — 1단계 질문</h3>
+    <ul class="dl" style="margin:0">
+      <li>다음엔 할 수 있어!</li>
+      <li>너무 어려웠어</li>
+      <li>시간이 부족했어</li>
+    </ul>
+  </div>
+</div>
+
+<h3>④ 완료 (complete 단계)</h3>
+<p>오늘 결과를 요약하는 화면입니다. 총 씨앗 수, 연속 일수, 완료 과목 수가 카드로 표시되며, 완료 루틴(+10 씨앗)과 포기 루틴이 구분되어 나열됩니다. "내일도 뿌듯하게!" 버튼으로 하루 설계 단계로 초기화됩니다.</p>
+
+<!-- 6.3 AI 캐릭터 & 마을 짓기 -->
+<div id="s6-3"></div>
+<h2>6.3 AI 캐릭터 & 마을 짓기</h2>
+<p>씨앗은 앱 내 기본 화폐입니다. <strong>공부 완료 시에만 지급</strong>되며, 앱 접속이나 광고 시청으로는 지급하지 않습니다. 모은 씨앗으로 우주 마을을 짓고 건물을 구매합니다.</p>
+
+<div class="ibox" style="background:#EEF0FF;border:1.5px solid #C5C3E8;margin:14px 0">
+  <h3 style="margin-top:0;font-size:13.5px">🪐 우주 마을 세계관</h3>
+  <p style="margin-bottom:6px;color:var(--textm)">내 우주인 캐릭터가 우주 속 행성 땅에서 시작합니다. 씨앗을 심으면 마을이 생겨나고, 집이 지어지고, 우주 마을이 점점 커져나갑니다.</p>
+  <p style="margin-bottom:0;color:var(--textm)"><strong>시작:</strong> 씨앗 행성 (빈 우주 행성) → <strong>성장:</strong> 새싹 마을 → 꽃 마을 → 나무 도시 → <strong>목표:</strong> 우주 문명</p>
+</div>
+
+<table class="tbl">
+  <thead><tr><th>마을 레벨</th><th>이름</th><th>필요 씨앗</th></tr></thead>
+  <tbody>
+    <tr><td>Lv.1</td><td>씨앗 행성</td><td>0</td></tr>
+    <tr><td>Lv.2</td><td>새싹 마을</td><td>50</td></tr>
+    <tr><td>Lv.3</td><td>꽃 마을</td><td>150</td></tr>
+    <tr><td>Lv.4</td><td>나무 도시</td><td>300</td></tr>
+    <tr><td>Lv.5</td><td>우주 문명</td><td>500</td></tr>
+  </tbody>
+</table>
+
+<h3>나의 우주 화면 구성</h3>
+<p>나의 우주 화면은 3개 탭으로 구성됩니다.</p>
+<ul class="dl">
+  <li><strong>우주 탭:</strong> 현재 마을 레벨·이름, 다음 레벨까지 진행 바, 연속 달성 일수, 총 달성일, 보유 씨앗 표시. 가로 스크롤 마을 뷰에서 구매한 건물이 표시됩니다.</li>
+  <li><strong>상점 탭:</strong> 씨앗 적립 방법 테이블 + 씨앗 사용 테이블 + 카테고리별(건물·장식·특별) 구매 가능 아이템 목록. 씨앗이 부족한 아이템은 흐리게 표시됩니다.</li>
+  <li><strong>뱃지 탭:</strong> 달성한 뱃지(3일 연속, 첫 완료, 독서왕 등)와 미달성 뱃지를 구분하여 표시합니다.</li>
+</ul>
+
+<!-- 6.4 알림 시스템 -->
+<div id="s6-4"></div>
+<h2>6.4 알림 시스템 — 루틴 진행 상황 기반</h2>
+<p>단순 시간 알림이 아닌, 아이의 루틴 진행 상황을 파악하여 맥락에 맞는 알림을 발송합니다. 알림 전략은 <strong>격려 중심</strong>으로 설계되며, 패널티형 알림은 사용하지 않습니다.</p>
+<table class="tbl">
+  <thead><tr><th>알림 종류</th><th>대상</th><th style="text-align:left">메시지 예시</th><th style="text-align:left">시점</th></tr></thead>
+  <tbody>
+    <tr><td>하루 시작 알림</td><td>아이</td><td style="text-align:left">오늘 뭐 할지 아직 안 골랐어! 탭 한 번으로 시작해봐 ☀️</td><td style="text-align:left">온보딩에서 설정한 알림 시간</td></tr>
+    <tr><td>진행 격려 알림</td><td>아이</td><td style="text-align:left">잘 하고 있어! 조금만 더 하면 씨앗 받을 수 있어 🌱</td><td style="text-align:left">공부 시작 후 30분 경과</td></tr>
+    <tr><td>친구 완료 알림</td><td>아이</td><td style="text-align:left">지수가 방금 수학 완료했어! 같이 콤보 씨앗 받아봐 💙</td><td style="text-align:left">친구 완료 즉시</td></tr>
+    <tr><td>보호자 알림</td><td>보호자</td><td style="text-align:left">민준이가 오늘 아직 시작 못 했어요. 응원 스티커를 보내보세요 💚</td><td style="text-align:left">저녁 7시 미완료 시</td></tr>
+    <tr><td>연속 기록 위기 알림</td><td>아이</td><td style="text-align:left">내일도 하면 5일 연속! 🔥</td><td style="text-align:left">연속 기록 위기 전날</td></tr>
+  </tbody>
+</table>
+<div class="callout info">알림 설정 화면(설정 → 알림 설정)에서 각 알림 종류별로 ON/OFF 토글이 가능합니다.</div>
+
+<!-- 6.5 소셜 시스템 -->
+<div id="s6-5"></div>
+<h2>6.5 소셜 시스템</h2>
+<p>소셜 기능은 "비교와 경쟁"이 아닌 "같이 하는 재미"를 기반으로 설계됩니다. 루틴 방 화면은 3개 탭으로 구성됩니다.</p>
+<table class="tbl">
+  <thead><tr><th>소셜 모드</th><th style="text-align:left">탭명</th><th style="text-align:left">핵심 특징</th><th style="text-align:left">안전 설계</th></tr></thead>
+  <tbody>
+    <tr><td>혼자 집중</td><td style="text-align:left">혼자 집중 🌱</td><td style="text-align:left">최근 루틴 기록(날짜·완료 과목·씨앗·달성 여부) 히스토리 표시. 내 현황 카드(연속 일수·총 달성일·씨앗) 제공</td><td style="text-align:left">외부 노출 없음, 알림 최소화</td></tr>
+    <tr><td>가족 공부방</td><td style="text-align:left">가족 공부방 🏠</td><td style="text-align:left">가족 구성원별 오늘 진행률 표시. 응원 💌 버튼으로 이모티콘 응원 전송. 전원 달성 시 +50 씨앗 보너스</td><td style="text-align:left">가족 내 소통만, 외부 노출 없음</td></tr>
+    <tr><td>친구 듀오 챌린지</td><td style="text-align:left">친구 듀오 👫</td><td style="text-align:left">최대 5명, 공동 달성 시 +20 콤보 씨앗. 친구 초대 버튼 제공. 친구별 연속 일수·진행률 표시. 이모티콘 응원만 가능</td><td style="text-align:left">채팅 없음, 이모티콘 응원만</td></tr>
+  </tbody>
+</table>
+<div class="callout info">소셜 모드는 온보딩 Step 10에서 초기 설정하며, 설정 화면 메인 탭에서 언제든지 변경할 수 있습니다.</div>
+
+<!-- 6.6 AI 기술 활용 포인트 -->
+<div id="s6-6"></div>
+<h2>6.6 AI 기술 활용 포인트</h2>
+<p>뿌듯의 AI는 아이를 직접 가르치지 않습니다. <strong>보호자가 더 좋은 설계자가 되도록 돕고, 아이가 더 오래 지속하도록 환경을 조정합니다.</strong></p>
+<table class="tbl">
+  <thead><tr><th>AI 기능</th><th style="text-align:left">설명</th><th style="text-align:left">프로토타입 구현 상태</th></tr></thead>
+  <tbody>
+    <tr><td>🤖 AI 캐릭터 생성</td><td style="text-align:left">사진 촬영 → 화풍 선택 → 우주인 캐릭터 자동 생성</td><td style="text-align:left">UI 시뮬레이션만 (실제 AI 처리 없음)</td></tr>
+    <tr><td>🌙 AI 하루 정리 질문</td><td style="text-align:left">아이 성향·완료 과목 기반 맞춤형 회고 질문</td><td style="text-align:left">고정 질문 세트로 구현</td></tr>
+    <tr><td>🔔 AI 알림 최적화</td><td style="text-align:left">개인별 완료 패턴 학습 → 최적 알림 시점 조정</td><td style="text-align:left">알림 종류별 ON/OFF 토글만 구현</td></tr>
+    <tr><td>🧭 소셜 모드 추천</td><td style="text-align:left">성향 검사 + 사용 패턴 → 소셜 모드 추천</td><td style="text-align:left">온보딩 Q1 답변 기반 단순 추천 구현</td></tr>
+    <tr><td>📊 보호자 인사이트</td><td style="text-align:left">학습 패턴 리포트 (집중 시간대, 어려운 과목 등)</td><td style="text-align:left">하드코딩된 예시 데이터로 UI 구현</td></tr>
+    <tr><td>⚖️ 루틴 난이도 조정</td><td style="text-align:left">완료율 기반 목표량 조정 제안</td><td style="text-align:left">미구현 (v2 예정)</td></tr>
+    <tr><td>🤝 챌린지 매칭</td><td style="text-align:left">비슷한 수준 아이들끼리 자동 매칭</td><td style="text-align:left">미구현 (v2 예정)</td></tr>
+  </tbody>
+</table>
+<div class="callout"><strong>핵심 포지셔닝:</strong> "뿌듯의 AI는 아이를 직접 가르치지 않습니다. 보호자가 더 좋은 설계자가 되도록 돕고, 아이가 더 오래 지속하도록 환경을 조정합니다." — 다른 EdTech AI와 완전히 다른 역할 정의</div>
+
+<div id="s8" class="sec-hdr"><div class="sec-num">07</div><div class="sec-title">차별점 요약</div></div>
+
+<table class="tbl">
+  <thead><tr><th>비교 항목</th><th>기존 서비스</th><th>뿌듯</th></tr></thead>
+  <tbody class="compare">
+    <tr><td>타겟 사용자</td><td>수험생·성인 중심 설계</td><td>초등 저학년 전용 설계</td></tr>
+    <tr><td>핵심 구조</td><td>설계자 = 실행자 (동일인)</td><td>설계자(보호자) ≠ 실행자(아이) — 유일한 구조</td></tr>
+    <tr><td>포지셔닝</td><td>습관 앱 (콘텐츠 경쟁)</td><td>습관 인프라 (다른 앱과 공존) + AI 캐릭터 & 우주 마을 세계관</td></tr>
+    <tr><td>실패 설계</td><td>패널티형 (식물 죽음, 하트 감소, 랭킹 하락)</td><td>친절형 — 보호 쿠폰, 격려 알림, 패널티 없음</td></tr>
+    <tr><td>소셜 방식</td><td>채팅·랭킹 노출</td><td>이모티콘만·보호자 승인·AI 모드 추천</td></tr>
+    <tr><td>보호자 연동</td><td>전무 (5개 서비스 공통)</td><td>설정 내 보호자 메뉴(비밀번호)·알림·루틴 설계 권한</td></tr>
+  </tbody>
+</table>
+
+<div class="final-box">
+  <div class="f-label">결론</div>
+  <p>뿌듯은 단순한 공부 타이머 앱이 아닙니다. 기존 습관 앱들이 공유하는 "성인의 자기조절 모델"이라는 전제를 깨고, 최초로 초등 저학년의 발달 단계에 맞게 설계된 습관 인프라입니다. 설계와 실행의 분리, 콘텐츠가 아닌 구조의 제공, 실패에 친절한 설계 — 이 세 가지 혁신이 기획서의 모든 기능을 하나의 필연적 서사로 연결합니다.</p>
+</div>
+
+
+<div id="s9" class="sec-hdr"><div class="sec-num">08</div><div class="sec-title">한계 및 향후 발전 방향</div></div>
+
+<div id="s9-1"></div>
+<h2>8.1 v1.0의 현실적 한계</h2>
+
+<div class="three-col">
+  <div class="ibox coral" style="margin:0">
+    <h3 style="margin-top:0;color:var(--coral);font-size:13.5px">① 자기보고 기반의 완료 처리</h3>
+    <p style="font-size:13px;margin-bottom:0">현재 루틴 완료는 아이가 직접 ✅ 버튼을 누르는 방식입니다. 실제로 공부했는지 검증할 수단이 없어 신뢰도에 한계가 있으며, 아이가 습관적으로 완료만 눌러버리는 패턴이 생길 수 있습니다.</p>
+  </div>
+  <div class="ibox coral" style="margin:0">
+    <h3 style="margin-top:0;color:var(--coral);font-size:13.5px">② 루틴의 단방향성</h3>
+    <p style="font-size:13px;margin-bottom:0">보호자가 루틴을 설계하고 아이가 실행하는 구조는 강점이지만, 실제 학습량·난이도 데이터가 앱 내부에서만 순환됩니다. 외부 학습 시스템과 연결되지 않으면 앱이 별도의 섬처럼 작동하게 됩니다.</p>
+  </div>
+  <div class="ibox coral" style="margin:0">
+    <h3 style="margin-top:0;color:var(--coral);font-size:13.5px">③ AI 기능의 프로토타입 수준</h3>
+    <p style="font-size:13px;margin-bottom:0">v1.0에서 AI 알림 최적화, 하루 정리 질문, 소셜 모드 추천은 규칙 기반 또는 고정 로직으로 구현되어 있습니다. 실질적인 개인화는 누적 데이터가 쌓인 이후에야 가능합니다.</p>
+  </div>
+</div>
+
+<div id="s9-2"></div>
+<h2>8.2 향후 발전 방향</h2>
+
+<div class="inno-card">
+  <div class="inno-card-hdr" style="background:var(--pl)">
+    <span class="inno-badge" style="background:var(--p)">v2 핵심</span>
+    <div>
+      <div class="inno-title" style="color:var(--pd)">① 성장판 연동 — 오프라인 학습 실적의 앱 자동 반영</div>
+      <div style="font-size:12px;color:var(--p)">자기보고 한계를 해소하는 검증된 완료 처리 구조</div>
+    </div>
+  </div>
+  <div class="inno-body">
+    <p style="font-size:14px;margin-bottom:14px">대교 센터에서 학생이 성장판 시스템을 통해 학습을 완료하면, 해당 실적이 뿌듯 앱에 자동으로 연동되는 구조입니다. 아이가 직접 완료 버튼을 누를 필요 없이, <strong>검증된 학습 데이터</strong>가 루틴 실행 기록으로 반영됩니다.</p>
+    <div class="callout t" style="margin-bottom:14px">이 연동이 실현되면 뿌듯은 단순한 자기보고 앱에서 벗어나 실제 학습 이력 기반의 습관 트래킹 서비스로 격상됩니다. 보호자 입장에서도 "아이가 진짜 했는지"에 대한 신뢰 문제가 해소되고, 씨앗 보상의 신뢰도와 동기부여 효과가 함께 높아집니다.</div>
+    <table class="tbl" style="margin-bottom:0">
+      <thead><tr><th>연동 항목</th><th style="text-align:left">내용</th></tr></thead>
+      <tbody>
+        <tr><td>완료 자동 반영</td><td style="text-align:left">센터 학습 완료 → 해당 루틴 자동 체크</td></tr>
+        <tr><td>씨앗 자동 적립</td><td style="text-align:left">검증된 완료에 씨앗 즉시 지급</td></tr>
+        <tr><td>보호자 알림</td><td style="text-align:left">"민준이가 센터에서 수학 완료했어요" 실시간 알림</td></tr>
+        <tr><td>보호자 인사이트</td><td style="text-align:left">센터 학습 + 자율 루틴 통합 학습 패턴 리포트</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="inno-card" style="margin-bottom:0">
+    <div class="inno-card-hdr" style="background:var(--tl)">
+      <span class="inno-badge" style="background:var(--t)">v2</span>
+      <div>
+        <div class="inno-title" style="color:#085041">② AI 개인화 고도화</div>
+      </div>
+    </div>
+    <div class="inno-body">
+      <p style="font-size:13px;margin-bottom:0">누적된 완료 패턴, 포기 이유, 하루 정리 응답 데이터를 기반으로 알림 시점 최적화, 루틴 난이도 자동 조정, 소셜 모드 재추천 등 실질적인 AI 개인화를 구현합니다.</p>
+    </div>
+  </div>
+  <div class="inno-card" style="margin-bottom:0">
+    <div class="inno-card-hdr" style="background:var(--al)">
+      <span class="inno-badge" style="background:var(--am)">v2</span>
+      <div>
+        <div class="inno-title" style="color:var(--a)">③ 챌린지 매칭 시스템</div>
+      </div>
+    </div>
+    <div class="inno-body">
+      <p style="font-size:13px;margin-bottom:0">비슷한 학년·루틴 패턴을 가진 아이들끼리 자동 매칭하여 친구 듀오 챌린지를 운영합니다. 초대 없이도 같은 수준의 동료와 함께 달성하는 경험을 제공합니다.</p>
+    </div>
+  </div>
+</div>
+
+<div id="app-a" class="app-hdr"><div class="app-title">[별첨 A] 핵심 혁신 상세 & 기존 서비스 분석</div></div>
+
+<h3>A.1 발달심리학적 근거</h3>
+<div class="two-col">
+  <div class="ibox p" style="margin:0">
+    <h3 style="margin-top:0;color:var(--pd);font-size:13.5px">Vygotsky의 ZPD 이론</h3>
+    <p style="margin-bottom:0;font-size:13px">만 6~9세는 메타인지(자신의 행동을 계획하고 모니터링하는 능력)가 아직 형성 전 단계입니다. 이 시기 아이에게 스스로 계획하라는 요청은 발달 단계에 맞지 않습니다. 뿌듯의 설계자-실행자 분리는 이 이론에서 출발합니다.</p>
+  </div>
+  <div class="ibox a" style="margin:0">
+    <h3 style="margin-top:0;color:var(--a);font-size:13.5px">Erikson 발달 이론</h3>
+    <p style="margin-bottom:0;font-size:13px">만 6~9세는 근면성 대 열등감(Industry vs. Inferiority)의 시기입니다. 반복적 실패 경험과 죄책감은 앱 이탈을 넘어 학습 자체에 대한 회피 정서를 형성할 수 있습니다. 패널티 없는 설계는 이 이론에 기반합니다.</p>
+  </div>
+</div>
+
+<h3 style="margin-top:24px">A.2 데이터 상세</h3>
+<table class="tbl">
+  <thead><tr><th>문제</th><th style="text-align:left">데이터</th><th style="text-align:left">출처</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>공부 흥미 저하</td>
+      <td style="text-align:left">초등생 56%가 "공부 싫다"고 응답. 공부가 재미없는 이유 1위는 "어려워서"(49%), 2위는 "부모님이 시켜서"(16%). 고학년 올라갈수록 비율 4%씩 증가</td>
+      <td style="text-align:left">아이스크림에듀 설문<br>매일일보, 2022.11</td>
+    </tr>
+    <tr>
+      <td>자발적 학습 의지의 중요성</td>
+      <td style="text-align:left">학부모의 57%가 "자발적 학습 의지"를 습관 형성의 가장 중요한 요소로 꼽음. 특히 저학년 자녀를 둔 학부모들이 학습 동기 유발에 더 큰 관심 보임</td>
+      <td style="text-align:left">비상교육 '초등 자녀의 학습 습관 형성' 설문<br>뉴시스, 2024.09</td>
+    </tr>
+    <tr>
+      <td>모바일 기기 방해</td>
+      <td style="text-align:left">학부모 42%가 "모바일 기기 사용"을 공부 습관 형성의 가장 큰 방해 요소로 꼽음 (고학년 54%). 저학년은 "규칙적이지 않은 일상"(38%)이 1위</td>
+      <td style="text-align:left">비상교육 설문<br>뉴시스, 2024.09</td>
+    </tr>
+    <tr>
+      <td>학습 습관을 위한 학부모 노력</td>
+      <td style="text-align:left">학습 계획표 작성(36%), 정해진 시간에 학습 시작(33%), 학습 환경 정비(16%), 학습 후 보상 제공(15%) 순. 계획·시간 관리를 가장 중점적으로 고민</td>
+      <td style="text-align:left">비상교육 설문<br>뉴시스, 2024.09</td>
+    </tr>
+    <tr>
+      <td>공부 스트레스</td>
+      <td style="text-align:left">초등생 대부분이 공부로 스트레스 경험 (저학년 63.1%, 고학년 74.9%, 상위 1% 74.1%). 원인은 학습량 부담과 성취 기대가 주요 축</td>
+      <td style="text-align:left">메가스터디교육 엘리하이<br>2026 초등 트렌드 보고서</td>
+    </tr>
+    <tr>
+      <td>수동적 학습 시작 방식</td>
+      <td style="text-align:left">저학년 33.2%가 "엄마가 시키는 것부터" 수동적으로 시작. 상위 1%는 76.1%가 스스로 순서를 정하거나 계획을 적고 시작 — 계획 능력이 성취의 핵심 변수</td>
+      <td style="text-align:left">엘리하이 2026 초등 트렌드 보고서</td>
+    </tr>
+    <tr>
+      <td>내적 동기의 핵심성</td>
+      <td style="text-align:left">선행 학습 동기 1위 "수학을 좋아하고 더 잘하고 싶어서" (상위 1% 54.2%, 저학년 42.4%, 고학년 38.8%). 불안·외부 강요보다 내적 동기가 학습 지속의 핵심</td>
+      <td style="text-align:left">엘리하이 2026 초등 트렌드 보고서</td>
+    </tr>
+    <tr>
+      <td>학부모 교육 전략 (토론)</td>
+      <td style="text-align:left">학부모 300명 토론: ① 동기와 보상이 중요, ② 작은 성과에 칭찬·격려로 성취감 부여, ③ 스스로 책상에 앉을 수 있는 환경 조성 순으로 핵심 해결책 꼽힘</td>
+      <td style="text-align:left">매일일보 학부모 토론, 2022.11</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:24px">A.3 기존 서비스 개별 분석</h3>
+<div class="two-col">
+  <div class="svc-card">
+    <div class="svc-hdr" style="background:var(--al)">
+      <div class="svc-icon" style="background:rgba(239,159,39,.15)">⏱️</div>
+      <div><div class="svc-name" style="color:var(--a)">열품타</div><div class="svc-tag">공부 시간 측정 + 전국 랭킹</div></div>
+    </div>
+    <div class="svc-body">
+      <div class="svc-desc">타이머로 공부 시간을 측정하고 전국 랭킹으로 경쟁하는 앱. 수험생·성인 중심 설계.</div>
+      <div class="svc-meta">
+        <div class="meta-box"><div class="meta-label" style="color:var(--a)">핵심 메커니즘</div><div class="meta-text">타이머 → 시간 집계 → 전국 랭킹 공개</div></div>
+        <div class="meta-box"><div class="meta-label" style="color:var(--a)">주요 사용자</div><div class="meta-text">고등학생·수험생. 10대 후반~20대</div></div>
+      </div>
+      <div class="diff-label">차이점</div>
+      <ul class="dl sub"><li>랭킹 비교 → 초등생 열등감·압박감 유발</li><li>습관 설계·계획 기능 없음</li><li>보호자 연동 전무</li></ul>
+    </div>
+  </div>
+  <div class="svc-card">
+    <div class="svc-hdr" style="background:var(--tl)">
+      <div class="svc-icon" style="background:rgba(15,110,86,.12)">🏙️</div>
+      <div><div class="svc-name" style="color:var(--t)">Focustown</div><div class="svc-tag">집중 시간으로 마을을 키우는 타이머</div></div>
+    </div>
+    <div class="svc-body">
+      <div class="svc-desc">포모도로 방식 기반. 집중 시간이 쌓이면 마을이 성장하는 픽셀 아트 시각 피드백.</div>
+      <div class="svc-meta">
+        <div class="meta-box"><div class="meta-label" style="color:var(--t)">핵심 메커니즘</div><div class="meta-text">타이머 → 집중 시간 누적 → 마을 성장</div></div>
+        <div class="meta-box"><div class="meta-label" style="color:var(--t)">주요 사용자</div><div class="meta-text">중·고·대학생. 10~20대 전반</div></div>
+      </div>
+      <div class="diff-label">차이점</div>
+      <ul class="dl sub"><li>시간 길이에만 집중 → 초등 단위 고려 없음</li><li>마을 완성 후 장기 동기 급락</li><li>과목·계획 설계 없음</li></ul>
+    </div>
+  </div>
+  <div class="svc-card">
+    <div class="svc-hdr" style="background:#F1F8E9">
+      <div class="svc-icon" style="background:rgba(85,139,47,.12)">🌿</div>
+      <div><div class="svc-name" style="color:#558B2F">집중 식물</div><div class="svc-tag">타이머 유지 시 식물이 자라는 앱</div></div>
+    </div>
+    <div class="svc-body">
+      <div class="svc-desc">타이머 유지 시 식물 성장, 이탈 시 소멸 패널티로 집중 유도.</div>
+      <div class="svc-meta">
+        <div class="meta-box"><div class="meta-label" style="color:#558B2F">핵심 메커니즘</div><div class="meta-text">타이머 → 화면 유지 시 성장 → 이탈 시 소멸</div></div>
+        <div class="meta-box"><div class="meta-label" style="color:#558B2F">주요 사용자</div><div class="meta-text">중·고·대학생. 스마트폰 억제 목적</div></div>
+      </div>
+      <div class="diff-label">차이점</div>
+      <ul class="dl sub"><li>패널티 → 초등생 죄책감·불안 유발</li><li>장기 습관 구조 없음, 소셜 없음</li><li>보호자 연동 없음</li></ul>
+    </div>
+  </div>
+  <div class="svc-card">
+    <div class="svc-hdr" style="background:var(--bl)">
+      <div class="svc-icon" style="background:rgba(24,95,165,.12)">📚</div>
+      <div><div class="svc-name" style="color:var(--b)">파트타임 스터디</div><div class="svc-tag">스터디 그룹 매칭 + 함께 공부</div></div>
+    </div>
+    <div class="svc-body">
+      <div class="svc-desc">그룹 채팅, 인증 사진, 출석 체크 기반 스터디 커뮤니티. 수험생 중심.</div>
+      <div class="svc-meta">
+        <div class="meta-box"><div class="meta-label" style="color:var(--b)">핵심 메커니즘</div><div class="meta-text">그룹 가입 → 채팅·인증·출석 → 상호 독려</div></div>
+        <div class="meta-box"><div class="meta-label" style="color:var(--b)">주요 사용자</div><div class="meta-text">수험생·자격증 준비생. 20대 이상</div></div>
+      </div>
+      <div class="diff-label">차이점</div>
+      <ul class="dl sub"><li>채팅·인증 → 초등 안전 문제</li><li>그룹 해체 시 동기 소멸</li><li>보호자 연동 없음</li></ul>
+    </div>
+  </div>
+</div>
+<div class="svc-card" style="margin-top:14px">
+  <div class="svc-hdr" style="background:var(--corl)">
+    <div class="svc-icon" style="background:rgba(153,60,29,.1)">💰</div>
+    <div><div class="svc-name" style="color:var(--coral)">캐시워크 모두의 챌린지</div><div class="svc-tag">걷기·미션 달성 시 현금 포인트 보상</div></div>
+  </div>
+  <div class="svc-body">
+    <div class="svc-desc">걷기·챌린지 달성 시 캐시 지급, 광고 시청으로 추가 포인트, 쿠폰 교환. 수백만 성인 사용자 확보.</div>
+    <div class="svc-meta">
+      <div class="meta-box"><div class="meta-label" style="color:var(--coral)">핵심 메커니즘</div><div class="meta-text">달성 → 광고 시청 → 현금 포인트 → 쿠폰</div></div>
+      <div class="meta-box"><div class="meta-label" style="color:var(--coral)">주요 사용자</div><div class="meta-text">30~50대 성인. 소액 적립 관심층</div></div>
+    </div>
+    <div class="diff-label">차이점</div>
+    <ul class="dl sub" style="columns:2;gap:20px"><li>현금·광고 → 아동 부적합</li><li>이벤트성 → 루틴 습관화 구조 없음</li><li>공부 특화 기능 없음</li></ul>
+  </div>
+</div>
+
+<footer class="doc-footer">
+  <div class="brand">뿌듯</div>
+  <p>뿌듯 (My Smart Routine) | 서비스 기획서 v3.1 · 2025년 5월 · 대외비</p>
+</footer>
+
+</div><!-- /main -->
+
+<script>
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  prog.style.transform = `scaleX(${h.scrollTop / (h.scrollHeight - h.clientHeight)})`;
+});
+
+const sections = document.querySelectorAll('[id]');
+const navItems = document.querySelectorAll('.sb-item');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const match = document.querySelector(`.sb-item[href="#${e.target.id}"]`);
+      if (match) match.classList.add('active');
+    }
+  });
+}, { threshold: 0.2, rootMargin: '-60px 0px -60% 0px' });
+sections.forEach(s => obs.observe(s));
+
+// Roadmap dot colors
+document.querySelectorAll('.rdmap-body li').forEach(li => {
+  const hdr = li.closest('.rdmap-card').querySelector('.rdmap-hdr');
+  const bg = hdr.style.background;
+  const dot = document.createElement('span');
+  dot.style.cssText = `position:absolute;left:0;top:13px;width:5px;height:5px;border-radius:50%;background:${bg}`;
+  li.style.position = 'relative';
+  li.insertBefore(dot, li.firstChild);
+});
+
+// Comparison table last-col highlight
+document.querySelectorAll('tbody.compare tr').forEach(tr => {
+  const last = tr.querySelector('td:last-child');
+  if (last) {
+    last.style.fontWeight = '600';
+    last.style.color = 'var(--green)';
+    last.style.background = 'var(--greenl)';
+  }
+});
+</script>
+</body>
+</html>
